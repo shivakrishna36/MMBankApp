@@ -1,0 +1,8 @@
+.git
+.settings
+bin
+.classpath
+.project
+.pmd
+log.out
+.eclipse-pmd
