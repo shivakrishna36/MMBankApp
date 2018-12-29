@@ -1,6 +1,5 @@
 package com.moneymoney.account.service;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -11,11 +10,11 @@ public interface SavingsAccountService {
 
 	SavingsAccount createNewAccount(String accountHolderName, double accountBalance, boolean salary) throws ClassNotFoundException, SQLException;
 
-	SavingsAccount updateAccount(int accountNumber, String accountHolderName) throws ClassNotFoundException, SQLException;
+	SavingsAccount updateAccount(SavingsAccount account, String accountHolderName, boolean value) throws ClassNotFoundException, SQLException;
 
 	SavingsAccount getAccountById(int accountNumber) throws ClassNotFoundException, SQLException, AccountNotFoundException;
 
-	void deleteAccount(int accountNumber) throws ClassNotFoundException, SQLException;
+	String deleteAccount(int accountNumber) throws ClassNotFoundException, SQLException;
 	
 	List<SavingsAccount> getAllSavingsAccount() throws ClassNotFoundException, SQLException;
 
@@ -29,12 +28,15 @@ public interface SavingsAccountService {
 
 	SavingsAccount searchAccountByName(String accountHolderName) throws ClassNotFoundException, SQLException, AccountNotFoundException;
 
-	List<SavingsAccount> sortByAccountNumber() throws ClassNotFoundException, SQLException, AccountNotFoundException;
-
 	List<SavingsAccount> sortByAccountHolderName() throws ClassNotFoundException, SQLException;
 
+	List<SavingsAccount> sortBySalaryRange(int minimunbalance,
+			int maximumbalance) throws ClassNotFoundException, SQLException;
 
-	
+	List<SavingsAccount> sortBySalaryLessthanGivenInput(int amount) throws ClassNotFoundException, SQLException;
+
+	List<SavingsAccount> sortBySalaryGreaterthanGivenInput(int maximumAmount) throws ClassNotFoundException, SQLException;
+
 }
 
 

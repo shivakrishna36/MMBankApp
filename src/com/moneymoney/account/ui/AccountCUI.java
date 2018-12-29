@@ -9,13 +9,12 @@ import com.moneymoney.account.service.SavingsAccountService;
 import com.moneymoney.account.service.SavingsAccountServiceImpl;
 import com.moneymoney.account.util.DBUtil;
 import com.moneymoney.exception.AccountNotFoundException;
-import com.mysql.jdbc.UpdatableResultSet;
 
 public class AccountCUI {
 	private static Scanner scanner = new Scanner(System.in);
 	private static SavingsAccountService savingsAccountService = new SavingsAccountServiceImpl();
 
-	public static void start() {
+	public static void startSavingsAccount() {
 
 		do {
 			System.out.println("****** Welcome to Money Money Bank********");
@@ -39,7 +38,7 @@ public class AccountCUI {
 
 		} while (true);
 	}
-
+	
 	private static void performOperation(int choice) {
 		switch (choice) {
 		case 1:
@@ -49,7 +48,6 @@ public class AccountCUI {
 			updateAccount();
 			break;
 		case 3:
-			System.out.println("case 3");
 			deleteAccount();
 			break;
 		case 4:
@@ -88,71 +86,63 @@ public class AccountCUI {
 
 	}
 
-	private static void sortAccounts() {
-		System.out.println("1. Enter the account Number to Sort");
-		System.out.println("2. Enterthe accountHolderNumber to sort");
-		System.out.println("3. Enter the account balance range to sort");
-
-		System.out.println("Enter the option number to sort accounts");
-		int choice = scanner.nextInt();
-		switch (choice) {
-		case 1:
-			List<SavingsAccount> savingsAccounts;
-			try {
-				savingsAccounts = savingsAccountService.sortByAccountNumber();
-				for (SavingsAccount savingsAccount : savingsAccounts) {
-					System.out.println(savingsAccount);
-				}
-			} catch (ClassNotFoundException | SQLException
-					| AccountNotFoundException e) {
-				e.printStackTrace();
-			}
-			break;
-
-		case 2:
-			try {
-				savingsAccounts = savingsAccountService
-						.sortByAccountHolderName();
-				for (SavingsAccount savingsAccount : savingsAccounts) {
-					System.out.println(savingsAccount);
-				}
-			} catch (ClassNotFoundException | SQLException e) {
-				e.printStackTrace();
-			}
-			break;
-
-		case 3:
-			try {
-				savingsAccounts = savingsAccountService.sortByAccountNumber();
-				for (SavingsAccount savingsAccount : savingsAccounts) {
-					System.out.println(savingsAccount);
-				}
-			} catch (ClassNotFoundException | SQLException
-					| AccountNotFoundException e) {
-				e.printStackTrace();
-			}
-			break;
-		default:
-			try {
-				throw new AccountNotFoundException("not valid option");
-			} catch (AccountNotFoundException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+	
 
 	private static void updateAccount() {
-		System.out.println("Enter the account Number to update");
+		System.out.println("Enter 1 to update the name");
+		System.out.println("Enter 2 to update the salaried");
+		System.out.println("Enter 3 to update Both");
+		int choice = scanner.nextInt();
+		System.out.println("Enter the account number");
 		int accountNumber = scanner.nextInt();
-		System.out.println("Enter the name to update");
-		String accountHolderName = scanner.nextLine();
-		try {
-			savingsAccountService.updateAccount(accountNumber,
-					accountHolderName);
-		} catch (ClassNotFoundException | SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		String accountHolderName="";
+		boolean value = true;
+			switch(choice)
+			{
+			case 1:
+			System.out.println("Enter the name to update");
+			accountHolderName = scanner.nextLine();
+			accountHolderName = scanner.nextLine();
+				SavingsAccount account;
+				try {
+					account = savingsAccountService.getAccountById(accountNumber);
+					savingsAccountService.updateAccount(account,accountHolderName,value);
+				} catch (ClassNotFoundException | SQLException
+						| AccountNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			break;
+			case 2:
+				System.out.println("Enter the salaried to update");
+				value = scanner.nextBoolean();
+				SavingsAccount account1;
+				try {
+					account1 = savingsAccountService.getAccountById(accountNumber);
+					savingsAccountService.updateAccount(account1,accountHolderName,value);
+				} catch (ClassNotFoundException | SQLException
+						| AccountNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			break;
+			case 3:
+				System.out.println("Enter the name to update");
+				accountHolderName = scanner.nextLine();
+				accountHolderName = scanner.nextLine();
+				System.out.println("Enter the salaried to update");
+				value = scanner.nextBoolean();
+				SavingsAccount account2;
+				try {
+					account2 = savingsAccountService.getAccountById(accountNumber);
+					savingsAccountService.updateAccount(account2,accountHolderName,value);
+				} catch (ClassNotFoundException | SQLException
+						| AccountNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		
 
 	}
 
@@ -175,8 +165,8 @@ public class AccountCUI {
 	}
 
 	private static void searchAccount() {
-		System.out.println("Search by using account number");
-		System.out.println("Search by using account holder name");
+		System.out.println("1.To Search by using account number");
+		System.out.println("2.To Search by using account holder name");
 
 		System.out.println("Enter the choice:");
 		int choice = scanner.nextInt();
@@ -228,7 +218,8 @@ public class AccountCUI {
 		System.out.println("Enter the accountnumber:");
 		int accountNumber = scanner.nextInt();
 		try {
-			savingsAccountService.deleteAccount(accountNumber);
+			String result = savingsAccountService.deleteAccount(accountNumber);
+			System.out.println(result);
 		} catch (ClassNotFoundException | SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -312,20 +303,6 @@ public class AccountCUI {
 		}
 	}
 
-	private static void sortMenu(String sortWay) {
-		do {
-			System.out.println("+++++Ways of Sorting+++++++");
-			System.out.println("1. Account Number");
-			System.out.println("2. Account Holder Name");
-			System.out.println("3. Account Balance");
-			System.out.println("4. Exit from Sorting");
-
-			int choice = scanner.nextInt();
-
-		} while (true);
-
-	}
-
 	private static void showAllAccounts() {
 		List<SavingsAccount> savingsAccounts;
 		try {
@@ -344,8 +321,7 @@ public class AccountCUI {
 			System.out.println("Enter your Full Name: ");
 			String accountHolderName = scanner.nextLine();
 			accountHolderName = scanner.nextLine();
-			System.out
-					.println("Enter Initial Balance(type na for Zero Balance): ");
+			System.out.println("Enter Initial Balance(type na for Zero Balance): ");
 			String accountBalanceStr = scanner.next();
 			double accountBalance = 0.0;
 			if (!accountBalanceStr.equalsIgnoreCase("na")) {
@@ -368,6 +344,93 @@ public class AccountCUI {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private static void sortAccounts() {
+		do {
+			System.out.println("+++++Ways of Sorting+++++++");
+			System.out.println("1. Account Holder Name");
+			System.out.println("2. Enter the account balance range to sort");
+			System.out.println("3. Enter the amount that returns lessthan given amount accounts");
+			System.out.println("4. Enter the amount that returns greaterthan given amount accounts");
+			System.out.println("5. Exit");
+			System.out.println("Enter the option number to sort accounts");
+			int choice = scanner.nextInt();
+			List<SavingsAccount> savingsAccounts;
+			switch (choice) {
+			case 1:
+				try {
+					savingsAccounts = savingsAccountService.sortByAccountHolderName();
+					for (SavingsAccount savingsAccount : savingsAccounts) {
+						System.out.println(savingsAccount);
+					}
+				} catch (ClassNotFoundException | SQLException e) {
+					e.printStackTrace();
+				}
+				break;
+
+			case 2:
+				System.out.println("Enter Minimum Range");
+				int minimunbalance = scanner.nextInt();
+				System.out.println("Enter Maximun Range");
+				int maximumbalance = scanner.nextInt();
+				try {
+					savingsAccounts = savingsAccountService.sortBySalaryRange(minimunbalance,maximumbalance);
+					for (SavingsAccount savingsAccount : savingsAccounts) {
+						System.out.println(savingsAccount);
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				break;
+				
+			case 3:
+				System.out.println("Enter amount");
+				int amount = scanner.nextInt();
+				try {
+					savingsAccounts = savingsAccountService.sortBySalaryLessthanGivenInput(amount);
+					for (SavingsAccount savingsAccount : savingsAccounts) {
+						System.out.println(savingsAccount);
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				break;
+				
+			case 4:
+				System.out.println("Enter amount");
+				int maximumAmount = scanner.nextInt();
+				try {
+					savingsAccounts = savingsAccountService.sortBySalaryGreaterthanGivenInput(maximumAmount);
+					for (SavingsAccount savingsAccount : savingsAccounts) {
+						System.out.println(savingsAccount);
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				break;
+			case 5:
+				System.exit(0);
+				
+			default:
+				try {
+					throw new AccountNotFoundException("not valid option");
+				} catch (AccountNotFoundException e) {
+					e.printStackTrace();
+				}
+			}
+
+		} while (true);
+
 	}
 
 }

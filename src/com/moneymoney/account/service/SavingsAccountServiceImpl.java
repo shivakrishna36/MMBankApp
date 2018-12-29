@@ -1,6 +1,5 @@
 package com.moneymoney.account.service;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -76,8 +75,8 @@ public class SavingsAccountServiceImpl implements SavingsAccountService {
 	}
 
 	@Override
-	public SavingsAccount updateAccount(int account,String name) throws ClassNotFoundException, SQLException {
-		savingsAccountDAO.updateAccount(account,name);
+	public SavingsAccount updateAccount(SavingsAccount account,String name,boolean value) throws ClassNotFoundException, SQLException {
+		savingsAccountDAO.updateAccount(account,name,value);
 		return null;
 	}
 
@@ -87,8 +86,8 @@ public class SavingsAccountServiceImpl implements SavingsAccountService {
 	}
 
 	@Override
-	public void deleteAccount(int accountNumber) throws ClassNotFoundException, SQLException {
-		savingsAccountDAO.deleteAccount(accountNumber);
+	public String deleteAccount(int accountNumber) throws ClassNotFoundException, SQLException {
+		return savingsAccountDAO.deleteAccount(accountNumber);
 	
 	}
 
@@ -108,14 +107,28 @@ public class SavingsAccountServiceImpl implements SavingsAccountService {
 		
 	}
 
-	@Override
-	public List<SavingsAccount> sortByAccountNumber() throws ClassNotFoundException, SQLException, AccountNotFoundException {
-		return savingsAccountDAO.sortByAccountNumber();
-	}
 
 	@Override
 	public List<SavingsAccount> sortByAccountHolderName() throws ClassNotFoundException, SQLException {
 		return savingsAccountDAO.sortByAccountHolderName();
+	}
+
+	@Override
+	public List<SavingsAccount> sortBySalaryRange(int minimunbalance,
+			int maximumbalance) throws ClassNotFoundException, SQLException {
+		return  savingsAccountDAO.sortBySalaryRange(minimunbalance,maximumbalance);
+		
+	}
+
+	@Override
+	public List<SavingsAccount> sortBySalaryLessthanGivenInput(int amount) throws ClassNotFoundException, SQLException {
+		return savingsAccountDAO.sortByLessthanGivenSalary(amount);
+	}
+
+	@Override
+	public List<SavingsAccount> sortBySalaryGreaterthanGivenInput(
+			int maximumAmount) throws ClassNotFoundException, SQLException {
+		return savingsAccountDAO.sortByGreaterthanGivenSalary(maximumAmount);
 	}
 
 	

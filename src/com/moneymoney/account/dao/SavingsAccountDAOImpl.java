@@ -76,11 +76,12 @@ public class SavingsAccountDAOImpl implements SavingsAccountDAO {
 		throw new AccountNotFoundException("Account with account number "+accountNumber+" does not exist.");
 	}
 	
-	public SavingsAccount updateAccount(int account,String name) throws SQLException, ClassNotFoundException {
+	public SavingsAccount updateAccount(SavingsAccount account,String name,boolean value) throws SQLException, ClassNotFoundException {
 		Connection connection = DBUtil.getConnection();
-		PreparedStatement statement = connection.prepareStatement("update account set account_hn=? where account_id=?");
+		PreparedStatement statement = connection.prepareStatement("update account set account_hn=?,salary=? where account_id=?");
 		statement.setString(1, name);
-		statement.setInt(2, account);
+		statement.setBoolean(2, value);
+		statement.setInt(3,account.getBankAccount().getAccountNumber());
 		statement.executeUpdate();
 		statement.close();
 		return null;
@@ -88,12 +89,19 @@ public class SavingsAccountDAOImpl implements SavingsAccountDAO {
 
 	
 	@Override
-	public void deleteAccount(int accountNumber) throws ClassNotFoundException, SQLException {
+	public String deleteAccount(int accountNumber) throws ClassNotFoundException, SQLException {
 		Connection connection = DBUtil.getConnection();
 		PreparedStatement statement = connection.prepareStatement("delete from account where account_id=?");
 		statement.setInt(1, accountNumber);
-		statement.execute();
+		boolean result = statement.execute();
+		String answer = "";
+		if(!result)
+		{
+			answer = "account deleted";
+		}
 		statement.close();
+		DBUtil.commit();
+		return answer;
 	}
 
 	
@@ -153,30 +161,13 @@ public class SavingsAccountDAOImpl implements SavingsAccountDAO {
 		throw new AccountNotFoundException("not a valid account");
 	}
 
-	@Override
-	public List<SavingsAccount> sortByAccountNumber() throws SQLException, ClassNotFoundException, AccountNotFoundException {
-		List<SavingsAccount> savingsAccounts = new ArrayList<SavingsAccount>();
-		Connection connection = DBUtil.getConnection();
-		Statement statement = connection.createStatement();
-		ResultSet resultset = statement.executeQuery("select * from account ORDER BY account_id");
-		while(resultset.next())
-		{
-			int accountNumber = resultset.getInt(1);
-			String accountHolderName = resultset.getString("account_hn");
-			double accountBalance = resultset.getDouble(3);
-			boolean salary = resultset.getBoolean("salary");
-			SavingsAccount savingsAccount = new SavingsAccount(accountNumber, accountHolderName, accountBalance,salary);
-			savingsAccounts.add(savingsAccount);
-		}
-		return savingsAccounts;
-	}
 
 	@Override
 	public List<SavingsAccount> sortByAccountHolderName() throws SQLException, ClassNotFoundException {
 		List<SavingsAccount> savingsAccounts = new ArrayList<SavingsAccount>();
 		Connection connection = DBUtil.getConnection();
 		Statement statement = connection.createStatement();
-		ResultSet resultset = statement.executeQuery("select * from account ORDER BY account_hn");
+		ResultSet resultset = statement.executeQuery("select * from account ORDER BY account_hn DESC");
 		while(resultset.next())
 		{
 			int accountNumber = resultset.getInt(1);
@@ -189,8 +180,62 @@ public class SavingsAccountDAOImpl implements SavingsAccountDAO {
 		return savingsAccounts;
 	}
 
-	
+	@Override
+	public  List<SavingsAccount> sortBySalaryRange(int minimunbalance, int maximumbalance) throws ClassNotFoundException, SQLException {
+		List<SavingsAccount> savingsAccounts = new ArrayList<SavingsAccount>();
+		Connection connection = DBUtil.getConnection();
+		PreparedStatement statement = connection.prepareStatement("select * from account WHERE account_bal BETWEEN ? and ?");
+		statement.setDouble(1, minimunbalance);
+		statement.setDouble(2, maximumbalance);
+		ResultSet resultset = statement.executeQuery();
+		while(resultset.next())
+		{
+			int accountNumber = resultset.getInt(1);
+			String accountHolderName = resultset.getString("account_hn");
+			double accountBalance = resultset.getDouble(3);
+			boolean salary = resultset.getBoolean("salary");
+			SavingsAccount savingsAccount = new SavingsAccount(accountNumber, accountHolderName, accountBalance,salary);
+			savingsAccounts.add(savingsAccount);
+		}
+		return savingsAccounts;
+	}
 
+	@Override
+	public  List<SavingsAccount> sortByLessthanGivenSalary(int amount) throws ClassNotFoundException, SQLException {
+		List<SavingsAccount> savingsAccounts = new ArrayList<SavingsAccount>();
+		Connection connection = DBUtil.getConnection();
+		PreparedStatement statement = connection.prepareStatement("select * from account WHERE account_bal <=? ORDER BY account_bal");
+		statement.setDouble(1, amount);
+		ResultSet resultset = statement.executeQuery();
+		while(resultset.next())
+		{
+			int accountNumber = resultset.getInt(1);
+			String accountHolderName = resultset.getString("account_hn");
+			double accountBalance = resultset.getDouble(3);
+			boolean salary = resultset.getBoolean("salary");
+			SavingsAccount savingsAccount = new SavingsAccount(accountNumber, accountHolderName, accountBalance,salary);
+			savingsAccounts.add(savingsAccount);
+		}
+		return savingsAccounts;
+	}
 	
+	@Override
+	public  List<SavingsAccount> sortByGreaterthanGivenSalary(int amount) throws ClassNotFoundException, SQLException {
+		List<SavingsAccount> savingsAccounts = new ArrayList<SavingsAccount>();
+		Connection connection = DBUtil.getConnection();
+		PreparedStatement statement = connection.prepareStatement("select * from account WHERE account_bal >=? ORDER BY account_bal");
+		statement.setDouble(1, amount);
+		ResultSet resultset = statement.executeQuery();
+		while(resultset.next())
+		{
+			int accountNumber = resultset.getInt(1);
+			String accountHolderName = resultset.getString("account_hn");
+			double accountBalance = resultset.getDouble(3);
+			boolean salary = resultset.getBoolean("salary");
+			SavingsAccount savingsAccount = new SavingsAccount(accountNumber, accountHolderName, accountBalance,salary);
+			savingsAccounts.add(savingsAccount);
+		}
+		return savingsAccounts;
+	}
 
 }

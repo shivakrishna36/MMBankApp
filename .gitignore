@@ -6,3 +6,4 @@ bin
 .pmd
 log.out
 .eclipse-pmd
+.project
