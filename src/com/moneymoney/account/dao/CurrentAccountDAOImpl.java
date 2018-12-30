@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.moneymoney.account.CurrentAccount;
-import com.moneymoney.account.SavingsAccount;
 import com.moneymoney.account.util.DBUtil;
 import com.moneymoney.exception.AccountNotFoundException;
 
@@ -46,7 +45,7 @@ public class CurrentAccountDAOImpl implements CurrentAccountDAO{
 			CurrentAccount currentAccount1 = new CurrentAccount(accountNumber,name,balance,odlimit);
 			currentaccount.add(currentAccount1);
 		}
-		
+		statement.close();
 		return currentaccount;
 	}
 
@@ -61,6 +60,7 @@ public class CurrentAccountDAOImpl implements CurrentAccountDAO{
 		{
 			accountbalance =  balance.getDouble(1);
 		}
+		preparedStatement.close();
 		return accountbalance;
 	}
 
@@ -79,6 +79,7 @@ public class CurrentAccountDAOImpl implements CurrentAccountDAO{
 				currentAccount = new CurrentAccount(accountNumber, accountHolderName, accountBalance,odlimit);
 				return currentAccount;
 			}
+			preparedStatement.close();
 			throw new AccountNotFoundException("Account with account number "+accountNumber+" does not exist.");
 		}
 
@@ -115,6 +116,7 @@ public class CurrentAccountDAOImpl implements CurrentAccountDAO{
 			preparedStatement.setDouble(1, currentBalance);
 			preparedStatement.setInt(2, accountNumber);
 			preparedStatement.executeUpdate();
+			preparedStatement.close();
 		}
 
 		@Override
@@ -131,6 +133,7 @@ public class CurrentAccountDAOImpl implements CurrentAccountDAO{
 				CurrentAccount currentAccount = new CurrentAccount(accountNumber, accountHolderName, accountBalance,odlimit);
 				return currentAccount;
 			}
+			preparestatement.close();
 			throw new AccountNotFoundException("not a valid account");
 		}
 
@@ -148,6 +151,7 @@ public class CurrentAccountDAOImpl implements CurrentAccountDAO{
 				CurrentAccount currentAccount = new CurrentAccount(accountNumber, accountHolderName, accountBalance,odlimit);
 				return currentAccount;
 			}
+			preparestatement.close();
 			throw new AccountNotFoundException("Not a Valid Account");			
 		}
 
@@ -170,6 +174,7 @@ public class CurrentAccountDAOImpl implements CurrentAccountDAO{
 				account.add(currentAccount);
 				
 			}
+			preparestatement.close();
 			return account;	
 		}
 
@@ -188,6 +193,7 @@ public class CurrentAccountDAOImpl implements CurrentAccountDAO{
 				CurrentAccount currentAccount = new CurrentAccount(accountNumber, accountHolderName, accountBalance,odlimit);
 				currentAccounts.add(currentAccount);
 			}
+			statement.close();
 			return currentAccounts;
 		}
 
@@ -209,6 +215,7 @@ public class CurrentAccountDAOImpl implements CurrentAccountDAO{
 				CurrentAccount currentAccount = new CurrentAccount(accountNumber, accountHolderName, accountBalance,odlimit);
 				currentAccounts.add(currentAccount);
 			}
+			statement.close();
 			return currentAccounts;
 		}
 
@@ -228,6 +235,7 @@ public class CurrentAccountDAOImpl implements CurrentAccountDAO{
 				CurrentAccount currentAccount = new CurrentAccount(accountNumber, accountHolderName, accountBalance,odlimit);
 				currentAccounts.add(currentAccount);
 			}
+			statement.close();
 			return currentAccounts;
 		}
 
@@ -247,6 +255,7 @@ public class CurrentAccountDAOImpl implements CurrentAccountDAO{
 				CurrentAccount currentAccount = new CurrentAccount(accountNumber, accountHolderName, accountBalance,odlimit);
 				currentAccounts.add(currentAccount);
 			}
+			statement.close();
 			return currentAccounts;
 		}
 	}

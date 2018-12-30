@@ -39,6 +39,7 @@ public class Bootstrap {
 					AccountCUI.startSavingsAccount();
 			else
 				CurrentAccountCUI.startCurrentAccount();
+			scanner.close();
 		}while(true);
 	}
 

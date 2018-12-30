@@ -162,7 +162,7 @@ public class AccountCUI {
 	private static void searchAccount() {
 		System.out.println("1.To Search by using account number");
 		System.out.println("2.To Search by using account holder name");
-
+		System.out.println("3.To Search by using balance range");
 		System.out.println("Enter the choice:");
 		int choice = scanner.nextInt();
 		switch (choice) {

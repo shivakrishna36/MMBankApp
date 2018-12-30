@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Scanner;
 
 import com.moneymoney.account.CurrentAccount;
-import com.moneymoney.account.SavingsAccount;
 import com.moneymoney.account.service.CurrentAccountService;
 import com.moneymoney.account.service.CurrentAccountServiceImpl;
 import com.moneymoney.account.util.DBUtil;
