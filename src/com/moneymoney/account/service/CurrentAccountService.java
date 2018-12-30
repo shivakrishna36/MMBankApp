@@ -22,7 +22,7 @@ public interface CurrentAccountService
 	void deposit(CurrentAccount account, double amount) throws ClassNotFoundException, SQLException;
 	void withdraw(CurrentAccount account, double amount) throws ClassNotFoundException, SQLException;
 
-	CurrentAccount searchAccount(int accountNumber) throws ClassNotFoundException, SQLException, AccountNotFoundException;
+	CurrentAccount searchAccountById(int accountNumber) throws ClassNotFoundException, SQLException, AccountNotFoundException;
 
 	double checkCurrentBalance(int accountNumber) throws ClassNotFoundException, SQLException, AccountNotFoundException;
 		
@@ -37,5 +37,7 @@ public interface CurrentAccountService
 	List<CurrentAccount> sortBySalaryLessthanGivenInput(int amount) throws ClassNotFoundException, SQLException;
 
 	List<CurrentAccount> sortBySalaryGreaterthanGivenInput(int maximumAmount) throws ClassNotFoundException, SQLException;
+
+	List<CurrentAccount> getAccountByRange(double minimum, double maximum) throws ClassNotFoundException, SQLException, AccountNotFoundException;
 
 }

@@ -167,7 +167,7 @@ public class SavingsAccountDAOImpl implements SavingsAccountDAO {
 		List<SavingsAccount> savingsAccounts = new ArrayList<SavingsAccount>();
 		Connection connection = DBUtil.getConnection();
 		Statement statement = connection.createStatement();
-		ResultSet resultset = statement.executeQuery("select * from account ORDER BY account_hn DESC");
+		ResultSet resultset = statement.executeQuery("select * from account ORDER BY account_hn");
 		while(resultset.next())
 		{
 			int accountNumber = resultset.getInt(1);
@@ -184,7 +184,7 @@ public class SavingsAccountDAOImpl implements SavingsAccountDAO {
 	public  List<SavingsAccount> sortBySalaryRange(int minimunbalance, int maximumbalance) throws ClassNotFoundException, SQLException {
 		List<SavingsAccount> savingsAccounts = new ArrayList<SavingsAccount>();
 		Connection connection = DBUtil.getConnection();
-		PreparedStatement statement = connection.prepareStatement("select * from account WHERE account_bal BETWEEN ? and ?");
+		PreparedStatement statement = connection.prepareStatement("select * from account WHERE account_bal BETWEEN ? and ? ORDER BY account_bal");
 		statement.setDouble(1, minimunbalance);
 		statement.setDouble(2, maximumbalance);
 		ResultSet resultset = statement.executeQuery();
@@ -225,6 +225,26 @@ public class SavingsAccountDAOImpl implements SavingsAccountDAO {
 		Connection connection = DBUtil.getConnection();
 		PreparedStatement statement = connection.prepareStatement("select * from account WHERE account_bal >=? ORDER BY account_bal");
 		statement.setDouble(1, amount);
+		ResultSet resultset = statement.executeQuery();
+		while(resultset.next())
+		{
+			int accountNumber = resultset.getInt(1);
+			String accountHolderName = resultset.getString("account_hn");
+			double accountBalance = resultset.getDouble(3);
+			boolean salary = resultset.getBoolean("salary");
+			SavingsAccount savingsAccount = new SavingsAccount(accountNumber, accountHolderName, accountBalance,salary);
+			savingsAccounts.add(savingsAccount);
+		}
+		return savingsAccounts;
+	}
+
+	@Override
+	public List<SavingsAccount> getByAccountBalanceRange(double minimum,double maximum) throws SQLException, ClassNotFoundException {
+		List<SavingsAccount> savingsAccounts = new ArrayList<SavingsAccount>();
+		Connection connection = DBUtil.getConnection();
+		PreparedStatement statement = connection.prepareStatement("select * from account WHERE account_bal BETWEEN ? and ?");
+		statement.setDouble(1, minimum);
+		statement.setDouble(2, maximum);
 		ResultSet resultset = statement.executeQuery();
 		while(resultset.next())
 		{

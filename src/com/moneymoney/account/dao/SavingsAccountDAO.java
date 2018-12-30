@@ -24,6 +24,7 @@ public interface SavingsAccountDAO {
 	List<SavingsAccount> sortByLessthanGivenSalary(int amount) throws ClassNotFoundException, SQLException;
 	List<SavingsAccount> sortByGreaterthanGivenSalary(int amount)
 			throws ClassNotFoundException, SQLException;
+	List<SavingsAccount> getByAccountBalanceRange(double minimum, double maximum) throws SQLException, ClassNotFoundException;
 	
 	
 }

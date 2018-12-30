@@ -91,23 +91,16 @@ public class CurrentAccountCUI
 
 	}
 
-
-	private static void sortAccounts() {
-		// TODO Auto-generated method stub
-		
-	}
-
-
 	private static void showAllAccounts() {
 		List<CurrentAccount> currentAccounts = null;
 			try {
 				currentAccounts = currentAccountService.getAllCurrentAccounts();
+				for (CurrentAccount currentAccount : currentAccounts) {
+					System.out.println(currentAccount);
+				}
 			} catch (ClassNotFoundException | SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
-			for (CurrentAccount currentAccount : currentAccounts) {
-				System.out.println(currentAccount);
 			}
 	}
 
@@ -126,8 +119,25 @@ public class CurrentAccountCUI
 
 
 	private static void fundTransfer() {
-		// TODO Auto-generated method stub
-		
+
+		System.out.println("Enter Account Sender's Number: ");
+		int senderAccountNumber = scanner.nextInt();
+		System.out.println("Enter Account Receiver's Number: ");
+		int receiverAccountNumber = scanner.nextInt();
+		System.out.println("Enter Amount: ");
+		double amount = scanner.nextDouble();
+		try {
+			CurrentAccount senderCurrentAccount = currentAccountService
+					.getAccountById(senderAccountNumber);
+			CurrentAccount receiverSavingsAccount = currentAccountService
+					.getAccountById(receiverAccountNumber);
+			currentAccountService.fundTransfer(senderCurrentAccount,
+					receiverSavingsAccount, amount);
+		} catch (ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 
@@ -192,6 +202,7 @@ public class CurrentAccountCUI
 		
 		System.out.println("1.To Search by using account number");
 		System.out.println("2.To Search by using account holder name");
+		System.out.println("3.To search by using account balance range");
 
 		System.out.println("Enter the choice:");
 		int choice = scanner.nextInt();
@@ -202,7 +213,7 @@ public class CurrentAccountCUI
 			CurrentAccount currentAccounts;
 			try {
 				currentAccounts = currentAccountService
-						.searchAccount(accountNumber);
+						.searchAccountById(accountNumber);
 
 				System.out.println(currentAccounts.toString());
 			} catch (ClassNotFoundException | SQLException e) {
@@ -227,6 +238,23 @@ public class CurrentAccountCUI
 			} catch (AccountNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			}
+			break;
+		case 3:
+			System.out.println("Enter minimum balance:");
+			double minimum = scanner.nextDouble();
+			System.out.println("Enter maximum balance:");
+			double maximum = scanner.nextDouble();
+			List<CurrentAccount> currentaccount = null;
+			try {
+				currentaccount = currentAccountService.getAccountByRange(minimum,maximum);
+				for (CurrentAccount currentAccount : currentaccount) {
+					System.out.println(currentAccount);
+				}
+			} catch (ClassNotFoundException | SQLException
+					| AccountNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
 			break;
 		default:
@@ -334,5 +362,94 @@ public class CurrentAccountCUI
 			e.printStackTrace();
 		}
 	}
+	
+	private static void sortAccounts() {
+		do {
+			System.out.println("+++++Ways of Sorting+++++++");
+			System.out.println("1. Account Holder Name");
+			System.out.println("2. Enter the account balance range to sort");
+			System.out.println("3. Enter the amount that returns lessthan given amount accounts");
+			System.out.println("4. Enter the amount that returns greaterthan given amount accounts");
+			System.out.println("5. Exit");
+			System.out.println("Enter the option number to sort accounts");
+			int choice = scanner.nextInt();
+			List<CurrentAccount> currentAccounts;
+			switch (choice) {
+			case 1:
+				try {
+					currentAccounts = currentAccountService.sortByAccountHolderName();
+					for (CurrentAccount currentAccount : currentAccounts) {
+						System.out.println(currentAccount);
+					}
+				} catch (ClassNotFoundException | SQLException e) {
+					e.printStackTrace();
+				}
+				break;
+
+			case 2:
+				System.out.println("Enter Minimum Range");
+				int minimunbalance = scanner.nextInt();
+				System.out.println("Enter Maximun Range");
+				int maximumbalance = scanner.nextInt();
+				try {
+					currentAccounts = currentAccountService.sortBySalaryRange(minimunbalance,maximumbalance);
+					for (CurrentAccount currentAccount : currentAccounts) {
+						System.out.println(currentAccount);
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				break;
+				
+			case 3:
+				System.out.println("Enter amount");
+				int amount = scanner.nextInt();
+				try {
+					currentAccounts = currentAccountService.sortBySalaryLessthanGivenInput(amount);
+					for (CurrentAccount currentAccount : currentAccounts) {
+						System.out.println(currentAccount);
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				break;
+				
+			case 4:
+				System.out.println("Enter amount");
+				int maximumAmount = scanner.nextInt();
+				try {
+					currentAccounts = currentAccountService.sortBySalaryGreaterthanGivenInput(maximumAmount);
+					for (CurrentAccount currentAccount : currentAccounts) {
+						System.out.println(currentAccount);
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				break;
+			case 5:
+				startCurrentAccount();
+				
+			default:
+				try {
+					throw new AccountNotFoundException("not valid option");
+				} catch (AccountNotFoundException e) {
+					e.printStackTrace();
+				}
+			}
+
+		} while (true);
+
+		
+	}
+
 }
 

@@ -7,6 +7,7 @@ import com.moneymoney.account.CurrentAccount;
 import com.moneymoney.account.dao.CurrentAccountDAO;
 import com.moneymoney.account.dao.CurrentAccountDAOImpl;
 import com.moneymoney.account.factory.AccountFactory;
+import com.moneymoney.account.util.DBUtil;
 import com.moneymoney.exception.AccountNotFoundException;
 import com.moneymoney.exception.InsufficientFundsException;
 import com.moneymoney.exception.InvalidInputException;
@@ -50,7 +51,17 @@ public class CurrentAccountServiceImpl implements CurrentAccountService{
 
 	@Override
 	public void fundTransfer(CurrentAccount sender, CurrentAccount receiver,double amount) throws ClassNotFoundException, SQLException {
-		
+		try {
+			withdraw(sender, amount);
+			deposit(receiver, amount);
+			DBUtil.commit();
+		} catch (InvalidInputException | InsufficientFundsException e) {
+			e.printStackTrace();
+			DBUtil.rollback();
+		} catch(Exception e) {
+			e.printStackTrace();
+			DBUtil.rollback();
+		}
 	}
 
 	@Override
@@ -78,8 +89,8 @@ public class CurrentAccountServiceImpl implements CurrentAccountService{
 	}
 
 	@Override
-	public CurrentAccount searchAccount(int accountNumber)throws ClassNotFoundException, SQLException,AccountNotFoundException {
-		return null;
+	public CurrentAccount searchAccountById(int accountNumber)throws ClassNotFoundException, SQLException,AccountNotFoundException {
+		return currentAccountDAO.searchAccountByAccountNumber(accountNumber);
 	}
 
 	@Override
@@ -94,21 +105,27 @@ public class CurrentAccountServiceImpl implements CurrentAccountService{
 
 	@Override
 	public List<CurrentAccount> sortByAccountHolderName()throws ClassNotFoundException, SQLException {
-		return null;
+		return currentAccountDAO.sortByAccountHolderName();
 	}
 
 	@Override
 	public List<CurrentAccount> sortBySalaryRange(int minimunbalance,int maximumbalance) throws ClassNotFoundException, SQLException {
-		return null;
+		return currentAccountDAO.sortBySalaryRange(minimunbalance,maximumbalance);
 	}
 
 	@Override
 	public List<CurrentAccount> sortBySalaryLessthanGivenInput(int amount)	throws ClassNotFoundException, SQLException {
-		return null;
+		return currentAccountDAO.sortBySalaryLessthanGivenInput(amount);
 	}
 
 	@Override
 	public List<CurrentAccount> sortBySalaryGreaterthanGivenInput(int maximumAmount) throws ClassNotFoundException, SQLException {
-		return null;
+		return currentAccountDAO.sortBySalaryGreaterthanGivenInput(maximumAmount);
+	}
+
+	@Override
+	public List<CurrentAccount> getAccountByRange(double minimum, double maximum) throws ClassNotFoundException, SQLException, AccountNotFoundException {
+		
+		return currentAccountDAO.getAccountByRange(minimum,maximum);
 	}
 }

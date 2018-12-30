@@ -126,9 +126,13 @@ public class SavingsAccountServiceImpl implements SavingsAccountService {
 	}
 
 	@Override
-	public List<SavingsAccount> sortBySalaryGreaterthanGivenInput(
-			int maximumAmount) throws ClassNotFoundException, SQLException {
+	public List<SavingsAccount> sortBySalaryGreaterthanGivenInput(int maximumAmount) throws ClassNotFoundException, SQLException {
 		return savingsAccountDAO.sortByGreaterthanGivenSalary(maximumAmount);
+	}
+
+	@Override
+	public List<SavingsAccount> getAccountByRange(double minimum, double maximum) throws ClassNotFoundException, SQLException {
+		return savingsAccountDAO.getByAccountBalanceRange(minimum,maximum);
 	}
 
 	

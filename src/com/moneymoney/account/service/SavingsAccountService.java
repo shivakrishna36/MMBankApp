@@ -37,6 +37,8 @@ public interface SavingsAccountService {
 
 	List<SavingsAccount> sortBySalaryGreaterthanGivenInput(int maximumAmount) throws ClassNotFoundException, SQLException;
 
+	List<SavingsAccount> getAccountByRange(double minimum, double maximum) throws ClassNotFoundException, SQLException;
+
 }
 
 

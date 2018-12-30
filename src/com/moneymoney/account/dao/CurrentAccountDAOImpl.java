@@ -118,9 +118,136 @@ public class CurrentAccountDAOImpl implements CurrentAccountDAO{
 		}
 
 		@Override
-		public CurrentAccount searchAccountByName(String accountHolderName) {
-			// TODO Auto-generated method stub
-			return null;
+		public CurrentAccount searchAccountByName(String accountHolderName) throws ClassNotFoundException, SQLException, AccountNotFoundException {
+			Connection connection = DBUtil.getConnection();
+			PreparedStatement preparestatement = connection.prepareStatement("select * from account where account_hn=?");
+			preparestatement.setString(1, accountHolderName);
+			ResultSet resultset = preparestatement.executeQuery();
+			while(resultset.next())
+			{
+				int accountNumber = resultset.getInt(1);
+				double accountBalance = resultset.getDouble(3);
+				double odlimit = resultset.getDouble("odlimit");
+				CurrentAccount currentAccount = new CurrentAccount(accountNumber, accountHolderName, accountBalance,odlimit);
+				return currentAccount;
+			}
+			throw new AccountNotFoundException("not a valid account");
+		}
+
+		@Override
+		public CurrentAccount searchAccountByAccountNumber(int accountNumber) throws SQLException, ClassNotFoundException, AccountNotFoundException {
+			Connection connection = DBUtil.getConnection();
+			PreparedStatement preparestatement = connection.prepareStatement("select * from account where account_id=?");
+			preparestatement.setInt(1, accountNumber);
+			ResultSet resultset = preparestatement.executeQuery();
+			if(resultset.next())
+			{
+				String accountHolderName = resultset.getString("account_hn");
+				double accountBalance = resultset.getDouble(3);
+				double odlimit= resultset.getDouble("odlimit");
+				CurrentAccount currentAccount = new CurrentAccount(accountNumber, accountHolderName, accountBalance,odlimit);
+				return currentAccount;
+			}
+			throw new AccountNotFoundException("Not a Valid Account");			
+		}
+
+		@Override
+		public List<CurrentAccount> getAccountByRange(double minimum, double maximum) throws SQLException, ClassNotFoundException, AccountNotFoundException {
+			Connection connection = DBUtil.getConnection();
+			List<CurrentAccount> account = new ArrayList<CurrentAccount>();
+			PreparedStatement preparestatement = connection.prepareStatement("select * from account WHERE account_bal BETWEEN ? AND ?");
+			preparestatement.setDouble(1, minimum);
+			preparestatement.setDouble(2, maximum);
+			ResultSet resultset = preparestatement.executeQuery();
+			while(resultset.next())
+			{
+				int accountNumber = resultset.getInt(1);
+				String accountHolderName = resultset.getString("account_hn");
+				double accountBalance = resultset.getDouble(3);
+				double odlimit= resultset.getDouble("odlimit");
+				CurrentAccount currentAccount = new CurrentAccount(accountNumber, accountHolderName, accountBalance,odlimit);
+				
+				account.add(currentAccount);
+				
+			}
+			return account;	
+		}
+
+		@Override
+		public List<CurrentAccount> sortByAccountHolderName() throws SQLException, ClassNotFoundException {
+			List<CurrentAccount> currentAccounts = new ArrayList<CurrentAccount>();
+			Connection connection = DBUtil.getConnection();
+			Statement statement = connection.createStatement();
+			ResultSet resultset = statement.executeQuery("select * from account ORDER BY account_hn");
+			while(resultset.next())
+			{
+				int accountNumber = resultset.getInt(1);
+				String accountHolderName = resultset.getString("account_hn");
+				double accountBalance = resultset.getDouble(3);
+				double odlimit = resultset.getDouble("odlimit");
+				CurrentAccount currentAccount = new CurrentAccount(accountNumber, accountHolderName, accountBalance,odlimit);
+				currentAccounts.add(currentAccount);
+			}
+			return currentAccounts;
+		}
+
+		@Override
+		public List<CurrentAccount> sortBySalaryRange(int minimunbalance,
+				int maximumbalance) throws SQLException, ClassNotFoundException {
+			List<CurrentAccount> currentAccounts = new ArrayList<CurrentAccount>();
+			Connection connection = DBUtil.getConnection();
+			PreparedStatement statement = connection.prepareStatement("select * from account WHERE account_bal BETWEEN ? and ?");
+			statement.setDouble(1, minimunbalance);
+			statement.setDouble(2, maximumbalance);
+			ResultSet resultset = statement.executeQuery();
+			while(resultset.next())
+			{
+				int accountNumber = resultset.getInt(1);
+				String accountHolderName = resultset.getString("account_hn");
+				double accountBalance = resultset.getDouble(3);
+				double odlimit = resultset.getDouble("odlimit");
+				CurrentAccount currentAccount = new CurrentAccount(accountNumber, accountHolderName, accountBalance,odlimit);
+				currentAccounts.add(currentAccount);
+			}
+			return currentAccounts;
+		}
+
+		@Override
+		public List<CurrentAccount> sortBySalaryLessthanGivenInput(int amount) throws ClassNotFoundException, SQLException {
+			List<CurrentAccount> currentAccounts = new ArrayList<CurrentAccount>();
+			Connection connection = DBUtil.getConnection();
+			PreparedStatement statement = connection.prepareStatement("select * from account WHERE account_bal <= ? ORDER BY account_bal");
+			statement.setInt(1, amount);
+			ResultSet resultset = statement.executeQuery();
+			while(resultset.next())
+			{
+				int accountNumber = resultset.getInt(1);
+				String accountHolderName = resultset.getString("account_hn");
+				double accountBalance = resultset.getDouble(3);
+				double odlimit = resultset.getDouble("odlimit");
+				CurrentAccount currentAccount = new CurrentAccount(accountNumber, accountHolderName, accountBalance,odlimit);
+				currentAccounts.add(currentAccount);
+			}
+			return currentAccounts;
+		}
+
+		@Override
+		public List<CurrentAccount> sortBySalaryGreaterthanGivenInput(int maximumAmount) throws ClassNotFoundException, SQLException {
+			List<CurrentAccount> currentAccounts = new ArrayList<CurrentAccount>();
+			Connection connection = DBUtil.getConnection();
+			PreparedStatement statement = connection.prepareStatement("select * from account WHERE account_bal >= ? ORDER BY account_bal");
+			statement.setInt(1, maximumAmount);
+			ResultSet resultset = statement.executeQuery();
+			while(resultset.next())
+			{
+				int accountNumber = resultset.getInt(1);
+				String accountHolderName = resultset.getString("account_hn");
+				double accountBalance = resultset.getDouble(3);
+				double odlimit = resultset.getDouble("odlimit");
+				CurrentAccount currentAccount = new CurrentAccount(accountNumber, accountHolderName, accountBalance,odlimit);
+				currentAccounts.add(currentAccount);
+			}
+			return currentAccounts;
 		}
 	}
 

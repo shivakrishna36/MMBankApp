@@ -3,6 +3,8 @@ package com.moneymoney.account.ui;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.moneymoney.account.SavingsAccount;
 import com.moneymoney.account.service.SavingsAccountService;
@@ -11,11 +13,12 @@ import com.moneymoney.account.util.DBUtil;
 import com.moneymoney.exception.AccountNotFoundException;
 
 public class AccountCUI {
+	private static final Logger logger = Logger.getLogger(AccountCUI.class.getName());
 	private static Scanner scanner = new Scanner(System.in);
 	private static SavingsAccountService savingsAccountService = new SavingsAccountServiceImpl();
-
+	
 	public static void startSavingsAccount() {
-
+		
 		do {
 			System.out.println("****** Welcome to Money Money Bank********");
 			System.out.println("1. Open New Savings Account");
@@ -109,8 +112,7 @@ public class AccountCUI {
 					savingsAccountService.updateAccount(account,accountHolderName,value);
 				} catch (ClassNotFoundException | SQLException
 						| AccountNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.log(Level.SEVERE, "Exception occurs", e);
 				}
 			break;
 			case 2:
@@ -122,9 +124,7 @@ public class AccountCUI {
 					savingsAccountService.updateAccount(account1,accountHolderName,value);
 				} catch (ClassNotFoundException | SQLException
 						| AccountNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+					logger.log(Level.SEVERE, "Exception occurs", e);				}
 			break;
 			case 3:
 				System.out.println("Enter the name to update");
@@ -138,9 +138,7 @@ public class AccountCUI {
 					savingsAccountService.updateAccount(account2,accountHolderName,value);
 				} catch (ClassNotFoundException | SQLException
 						| AccountNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+					logger.log(Level.SEVERE, "Exception occurs", e);				}
 			}
 		
 
@@ -151,15 +149,12 @@ public class AccountCUI {
 		System.out.println("Enter the accountnumber:");
 		int accountNumber = scanner.nextInt();
 		try {
-			double balance = savingsAccountService
-					.checkCurrentBalance(accountNumber);
+			double balance = savingsAccountService.checkCurrentBalance(accountNumber);
 			System.out.println(balance);
 		} catch (ClassNotFoundException | SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "Exception occurs", e);
 		} catch (AccountNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "Exception occurs", e);
 		}
 
 	}
@@ -181,11 +176,9 @@ public class AccountCUI {
 
 				System.out.println(savingsAccounts.toString());
 			} catch (ClassNotFoundException | SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.log(Level.SEVERE, "Exception occurs", e);
 			} catch (AccountNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.log(Level.SEVERE, "Exception occurs", e);
 			}
 			break;
 		case 2:
@@ -197,19 +190,32 @@ public class AccountCUI {
 						.searchAccountByName(accountHolderName);
 				System.out.println(savingsAccounts1);
 			} catch (ClassNotFoundException | SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.log(Level.SEVERE, "Exception occurs", e);
 			} catch (AccountNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.log(Level.SEVERE, "Exception occurs", e);
 			}
+			break;
+		case 3:
+			System.out.println("Enter minimum balance:");
+			double minimum = scanner.nextDouble();
+			System.out.println("Enter maximum balance:");
+			double maximum = scanner.nextDouble();
+			List<SavingsAccount> savingsaccount = null;
+			try {
+				savingsaccount = savingsAccountService.getAccountByRange(minimum,maximum);
+				for (SavingsAccount savingsAccount : savingsaccount) {
+					System.out.println(savingsAccount);
+				}
+			} catch (ClassNotFoundException | SQLException e1) {
+				logger.log(Level.SEVERE, "Exception occurs", e1);
+			}
+			
 			break;
 		default:
 			try {
 				throw new AccountNotFoundException("Not a valid account");
 			} catch (AccountNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.log(Level.SEVERE, "Exception occurs", e);
 			}
 		}
 	}
@@ -221,8 +227,7 @@ public class AccountCUI {
 			String result = savingsAccountService.deleteAccount(accountNumber);
 			System.out.println(result);
 		} catch (ClassNotFoundException | SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "Exception occurs", e);
 		}
 
 	}
@@ -242,9 +247,9 @@ public class AccountCUI {
 			savingsAccountService.fundTransfer(senderSavingsAccount,
 					receiverSavingsAccount, amount);
 		} catch (ClassNotFoundException | SQLException e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "Exception occurs", e);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "Exception occurs", e);
 		}
 	}
 
@@ -264,13 +269,13 @@ public class AccountCUI {
 			try {
 				DBUtil.rollback();
 			} catch (SQLException e1) {
-				e1.printStackTrace();
+				logger.log(Level.SEVERE, "Exception occurs", e);
 			}
 		} catch (Exception e) {
 			try {
 				DBUtil.rollback();
 			} catch (SQLException e1) {
-				e1.printStackTrace();
+				logger.log(Level.SEVERE, "Exception occurs", e);
 			}
 		}
 	}
@@ -291,14 +296,14 @@ public class AccountCUI {
 			try {
 				DBUtil.rollback();
 			} catch (SQLException e1) {
-				e1.printStackTrace();
+				logger.log(Level.SEVERE, "Exception occurs", e);
 			}
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "Exception occurs", e);
 		} catch (Exception e) {
 			try {
 				DBUtil.rollback();
 			} catch (SQLException e1) {
-				e1.printStackTrace();
+				logger.log(Level.SEVERE, "Exception occurs", e);
 			}
 		}
 	}
@@ -311,7 +316,7 @@ public class AccountCUI {
 				System.out.println(savingsAccount);
 			}
 		} catch (ClassNotFoundException | SQLException e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "Exception occurs", e);
 		}
 
 	}
@@ -340,9 +345,9 @@ public class AccountCUI {
 			savingsAccountService.createNewAccount(accountHolderName,
 					accountBalance, salary);
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "Exception occurs", e);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "Exception occurs", e);
 		}
 	}
 	
@@ -365,7 +370,7 @@ public class AccountCUI {
 						System.out.println(savingsAccount);
 					}
 				} catch (ClassNotFoundException | SQLException e) {
-					e.printStackTrace();
+					logger.log(Level.SEVERE, "Exception occurs", e);
 				}
 				break;
 
@@ -380,10 +385,9 @@ public class AccountCUI {
 						System.out.println(savingsAccount);
 					}
 				} catch (SQLException e) {
-					e.printStackTrace();
+					logger.log(Level.SEVERE, "Exception occurs", e);
 				} catch (ClassNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.log(Level.SEVERE, "Exception occurs", e);
 				}
 				break;
 				
@@ -396,10 +400,9 @@ public class AccountCUI {
 						System.out.println(savingsAccount);
 					}
 				} catch (SQLException e) {
-					e.printStackTrace();
+					logger.log(Level.SEVERE, "Exception occurs", e);
 				} catch (ClassNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.log(Level.SEVERE, "Exception occurs", e);
 				}
 				break;
 				
@@ -412,20 +415,19 @@ public class AccountCUI {
 						System.out.println(savingsAccount);
 					}
 				} catch (SQLException e) {
-					e.printStackTrace();
+					logger.log(Level.SEVERE, "Exception occurs", e);
 				} catch (ClassNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.log(Level.SEVERE, "Exception occurs", e);
 				}
 				break;
 			case 5:
-				System.exit(0);
+				startSavingsAccount();
 				
 			default:
 				try {
 					throw new AccountNotFoundException("not valid option");
 				} catch (AccountNotFoundException e) {
-					e.printStackTrace();
+					logger.log(Level.SEVERE, "Exception occurs", e);
 				}
 			}
 

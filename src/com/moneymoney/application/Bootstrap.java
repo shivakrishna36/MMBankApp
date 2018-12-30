@@ -31,8 +31,8 @@ public class Bootstrap {
 		do
 		{
 			Scanner scanner = new Scanner(System.in);
-			System.out.println("Savings Account Menu");
-			System.out.println("Current Account Menu");
+			System.out.println("Enter 1 for Savings Account Menu");
+			System.out.println("Enter 2 for Current Account Menu");
 			System.out.println("Select Your Choice");
 			int number = scanner.nextInt();
 			if(number == 1)
