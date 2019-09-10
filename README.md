@@ -1,3 +1,2 @@
-## CAPGEMINI
 # MMBank-App
 
